@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.25)
 
 project(jslang)
 
-option(SLANG_PATH "Path to SLANG" ${CMAKE_CURRENT_SOURCE_DIR}/slang)
+set(SLANG_PATH ${CMAKE_CURRENT_SOURCE_DIR}/slang)
+message(STATUS "SLANG_PATH: ${SLANG_PATH}")
+message(STATIS "JAVA_HOME: $ENV{JAVA_HOME}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
