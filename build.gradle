@@ -1,0 +1,57 @@
+plugins {
+    id "java"
+}
+
+group = "moyongxin"
+version = "0.0.1"
+
+repositories {
+    mavenCentral()
+}
+
+task(generateHeaders, type: JavaCompile)  {
+    classpath = compileJava.classpath
+    destinationDirectory = compileJava.destinationDirectory
+    source = compileJava.source
+    options.compilerArgs += ["-h", file("natives/include/jni")]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
+}
+
+task compileJNI {
+    dependsOn generateHeaders
+
+    doLast {
+        exec {
+            commandLine "cmake","-GNinja","-Snatives","-Bnatives/build","-DSLANG_PATH=slang","-DCMAKE_INSTALL_PREFIX=build/install"
+        }
+        exec {
+            commandLine "cmake","--build","natives/build"
+        }
+        exec {
+            commandLine "cmake","--install","natives/build"
+        }
+    }
+}
+
+clean.doFirst {
+    delete fileTree("src/main/java/moyongxin/jslang/generated")
+    delete fileTree("natives/build")
+    delete fileTree("natives/include/jni")
+}
+
+processResources {
+    dependsOn compileJNI
+}
+
+jar {
+    dependsOn compileJNI
+    from "build/install"
+
+    manifest {
+        attributes "Main-Class": "moyongxin.jslang.JSlang"
+    }
+}
