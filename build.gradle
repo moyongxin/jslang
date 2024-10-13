@@ -50,7 +50,6 @@ processResources {
 }
 
 jar {
-    dependsOn compileJNI
     from "build/install"
 
     manifest {
