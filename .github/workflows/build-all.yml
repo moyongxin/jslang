@@ -17,6 +17,18 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Download latest slang release
+              uses: robinraju/release-downloader@v1.11
+              with:
+                repository: shader-slang/slang
+                latest: true
+                fileName: slang-*-windows-x86_64.zip
+                out-file-path: natives/slang.zip
+                extract: true
+
+            - name: (Powershell) Check if natives/slang/ exists as expected, and what's inside natives/slang/
+              run: Get-ChildItem -Path natives/ -Recurse
+
             - name: Set up JDK
               uses: actions/setup-java@v4
               with:
@@ -33,12 +45,21 @@ jobs:
               with:
                   arch: x64
 
+            - name: (Powershell) Break cyclic dependency in Gradle tasks by temporarily move src/main/java/moyongxin/jslang/JSlang.java to .txt file
+              run: Move-Item -Path src/main/java/moyongxin/jslang/JSlang.java -Destination src/main/java/moyongxin/jslang/JSlang.txt
+
             - name: Build with Gradle
               run: ./gradlew.bat build
 
-            - name: Get project version from Gradle task printVersion which prints the version string like "0.0.1"
+            - name: Restore src/main/java/moyongxin/jslang/JSlang.java
+              run: Move-Item -Path src/main/java/moyongxin/jslang/JSlang.txt -Destination src/main/java/moyongxin/jslang/JSlang.java
+
+            - name: Build with Gradle again
+              run: ./gradlew.bat build
+
+            - name: (Powershell) Get project version from Gradle task printVersion which prints the version string like "0.0.1"
               id: get-version
-              run: echo "::set-output name=version::$(./gradlew printVersion -q)"
+              run: echo "::set-output name=version::$(./gradlew.bat printVersion -q)"
 
             - name: Upload build artifacts
               uses: actions/upload-artifact@v4.4.3
@@ -66,6 +87,18 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Download latest slang release
+              uses: robinraju/release-downloader@v1.11
+              with:
+                repository: shader-slang/slang
+                latest: true
+                fileName: slang-*-linux-x86_64.zip
+                out-file-path: natives/slang.zip
+                extract: true
+
+            - name: (Bash) Check if natives/slang/ exists as expected, and what's inside natives/slang/
+              run: ls -R natives/
+
             - name: Set up JDK
               uses: actions/setup-java@v4
               with:
@@ -77,7 +110,19 @@ jobs:
             - name: Setup Gradle
               uses: gradle/actions/setup-gradle@add58192d1c6f4603dc6821e8616f251e2782884 # maybe latest
 
+            - name: Setup ./gradlew permissions
+              run: chmod +x gradlew
+
+            - name: (Bash) Break cyclic dependency in Gradle tasks by temporarily move src/main/java/moyongxin/jslang/JSlang.java to .txt file
+              run: mv src/main/java/moyongxin/jslang/JSlang.java src/main/java/moyongxin/jslang/JSlang.txt
+
             - name: Build with Gradle
+              run: ./gradlew build
+
+            - name: Restore src/main/java/moyongxin/jslang/JSlang.java
+              run: mv src/main/java/moyongxin/jslang/JSlang.txt src/main/java/moyongxin/jslang/JSlang.java
+
+            - name: Build with Gradle again
               run: ./gradlew build
 
             - name: Get project version from Gradle task printVersion which prints the version string like "0.0.1"
