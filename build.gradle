@@ -19,20 +19,26 @@ task(generateHeaders, type: JavaCompile)  {
 tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = "21"
     targetCompatibility = "21"
+
+    it.options.encoding = "UTF-8"
 }
 
 task compileJNI {
-    dependsOn generateHeaders
+   dependsOn generateHeaders
 
     doLast {
+        delete fileTree("natives/build")
         exec {
             commandLine "cmake","-GNinja","-Snatives","-Bnatives/build","-DSLANG_PATH=slang","-DCMAKE_INSTALL_PREFIX=build/install"
+            environment "JAVA_HOME", System.properties['java.home']
         }
         exec {
             commandLine "cmake","--build","natives/build"
+            environment "JAVA_HOME", System.properties['java.home']
         }
         exec {
             commandLine "cmake","--install","natives/build"
+            environment "JAVA_HOME", System.properties['java.home']
         }
     }
 }
