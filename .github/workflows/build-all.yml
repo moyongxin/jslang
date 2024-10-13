@@ -26,8 +26,10 @@ jobs:
                 out-file-path: natives/slang.zip
                 extract: true
 
-            - name: (Powershell) Check if natives/slang/ exists as expected, and what's inside natives/slang/
-              run: Get-ChildItem -Path natives/ -Recurse
+            - name: (Powershell) Move automatically extracted natives/slang.zip/ to natives/slang/
+              run: |
+                Move-Item -Path natives/slang.zip -Destination natives/slang
+                Get-ChildItem -Path natives/ -Recurse
 
             - name: Set up JDK
               uses: actions/setup-java@v4
@@ -96,8 +98,10 @@ jobs:
                 out-file-path: natives/slang.zip
                 extract: true
 
-            - name: (Bash) Check if natives/slang/ exists as expected, and what's inside natives/slang/
-              run: ls -R natives/
+            - name: (Bash) Move automatically extracted natives/slang.zip/ to natives/slang/
+              run: |
+                mv natives/slang.zip natives/slang
+                ls -R natives/
 
             - name: Set up JDK
               uses: actions/setup-java@v4
