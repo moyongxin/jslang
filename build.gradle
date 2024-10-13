@@ -37,6 +37,8 @@ task compileJNI {
     }
 }
 
+compileJava.dependsOn compileJNI
+
 clean.doFirst {
     delete fileTree("src/main/java/moyongxin/jslang/generated")
     delete fileTree("natives/build")
