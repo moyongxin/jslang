@@ -18,6 +18,12 @@ JNIEXPORT jint JNICALL Java_moyongxin_jslang_GlobalSession_findProfile(
   return session->findProfile((const char *)name);
 }
 
+JNIEXPORT jboolean JNICALL Java_moyongxin_jslang_GlobalSession_checkPassThroughSupport(
+    JNIEnv *, jclass, jlong ptr, jint passThrough) {
+    slang::IGlobalSession *session = (slang::IGlobalSession *)ptr;
+    return session->checkPassThroughSupport(static_cast<SlangPassThrough>(passThrough));
+}
+
 JNIEXPORT void JNICALL Java_moyongxin_jslang_TargetDesc_ctor(
     JNIEnv *, jclass, jlong ptr, jint format, jint profile, jint flags,
     jint floatingPointMode, jint lineDirectiveMode,

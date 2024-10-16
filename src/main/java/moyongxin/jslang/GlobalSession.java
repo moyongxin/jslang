@@ -12,6 +12,7 @@ public class GlobalSession implements AutoCloseable {
 
     public static native long createGlobalSession();
     public static native int findProfile(long ptr, long name);
+    public static native boolean checkPassThroughSupport(long ptr, int passThrough);
 
     public GlobalSession() {
         ptr = createGlobalSession();
@@ -22,6 +23,9 @@ public class GlobalSession implements AutoCloseable {
 
     public int findProfile(String name) {
         return findProfile(ptr, new CString(name).getPtr());
+    }
+    public boolean checkPassThroughSupport(int passThrough) {
+        return checkPassThroughSupport(ptr, passThrough);
     }
 
     @Override
