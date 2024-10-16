@@ -9,7 +9,7 @@ repositories {
     mavenCentral()
 }
 
-task(generateHeaders, type: JavaCompile)  {
+task(generateHeaders, type: JavaCompile) {
     classpath = compileJava.classpath
     destinationDirectory = compileJava.destinationDirectory
     source = compileJava.source
@@ -24,20 +24,19 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 task compileJNI {
-   dependsOn generateHeaders
+    dependsOn generateHeaders
 
     doLast {
-        delete fileTree("natives/build")
         exec {
-            commandLine "cmake","-GNinja","-Snatives","-Bnatives/build","-DSLANG_PATH=slang","-DCMAKE_INSTALL_PREFIX=build/install"
+            commandLine "cmake", "-GNinja", "-Snatives", "-Bnatives/build", "-DSLANG_PATH=slang", "-DCMAKE_INSTALL_PREFIX=build/install"
             environment "JAVA_HOME", System.properties['java.home']
         }
         exec {
-            commandLine "cmake","--build","natives/build"
+            commandLine "cmake", "--build", "natives/build"
             environment "JAVA_HOME", System.properties['java.home']
         }
         exec {
-            commandLine "cmake","--install","natives/build"
+            commandLine "cmake", "--install", "natives/build"
             environment "JAVA_HOME", System.properties['java.home']
         }
     }
