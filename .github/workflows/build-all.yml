@@ -26,13 +26,8 @@ jobs:
                 repository: shader-slang/slang
                 latest: true
                 fileName: slang-*-windows-x86_64.zip
-                out-file-path: natives/slang.zip
+                out-file-path: natives/slang
                 extract: true
-
-            - name: (Powershell) Move automatically extracted natives/slang.zip/ to natives/slang/
-              run: |
-                Move-Item -Path natives/slang.zip -Destination natives/slang
-                Get-ChildItem -Path natives/ -Recurse
 
             - name: Set up JDK
               uses: actions/setup-java@v4
@@ -50,16 +45,7 @@ jobs:
               with:
                   arch: x64
 
-            - name: (Powershell) Break cyclic dependency in Gradle tasks by temporarily move src/main/java/moyongxin/jslang/JSlang.java to .txt file
-              run: Move-Item -Path src/main/java/moyongxin/jslang/JSlang.java -Destination src/main/java/moyongxin/jslang/JSlang.txt
-
             - name: Build with Gradle
-              run: ./gradlew.bat build
-
-            - name: Restore src/main/java/moyongxin/jslang/JSlang.java
-              run: Move-Item -Path src/main/java/moyongxin/jslang/JSlang.txt -Destination src/main/java/moyongxin/jslang/JSlang.java
-
-            - name: Build with Gradle again
               run: ./gradlew.bat build
 
             - name: (Powershell) Get project version from Gradle task printVersion which prints the version string like "0.0.1"
@@ -102,13 +88,8 @@ jobs:
                 repository: shader-slang/slang
                 latest: true
                 fileName: slang-*-linux-x86_64.zip
-                out-file-path: natives/slang.zip
+                out-file-path: natives/slang
                 extract: true
-
-            - name: (Bash) Move automatically extracted natives/slang.zip/ to natives/slang/
-              run: |
-                mv natives/slang.zip natives/slang
-                ls -R natives/
 
             - name: Set up JDK
               uses: actions/setup-java@v4
@@ -124,16 +105,7 @@ jobs:
             - name: Setup ./gradlew permissions
               run: chmod +x gradlew
 
-            - name: (Bash) Break cyclic dependency in Gradle tasks by temporarily move src/main/java/moyongxin/jslang/JSlang.java to .txt file
-              run: mv src/main/java/moyongxin/jslang/JSlang.java src/main/java/moyongxin/jslang/JSlang.txt
-
             - name: Build with Gradle
-              run: ./gradlew build
-
-            - name: Restore src/main/java/moyongxin/jslang/JSlang.java
-              run: mv src/main/java/moyongxin/jslang/JSlang.txt src/main/java/moyongxin/jslang/JSlang.java
-
-            - name: Build with Gradle again
               run: ./gradlew build
 
             - name: Get project version from Gradle task printVersion which prints the version string like "0.0.1"

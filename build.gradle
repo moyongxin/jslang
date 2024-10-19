@@ -12,7 +12,7 @@ repositories {
 task(generateHeaders, type: JavaCompile) {
     classpath = compileJava.classpath
     destinationDirectory = compileJava.destinationDirectory
-    source = compileJava.source
+    source = compileJava.exclude("moyongxin/jslang/JSlang.java").source
     options.compilerArgs += ["-h", file("natives/include/jni")]
 }
 
