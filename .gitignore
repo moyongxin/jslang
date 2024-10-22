@@ -8,6 +8,8 @@ src/main/java/moyongxin/jslang/generated/
 ### Slang ###
 natives/slang
 
+**/CMakeUserPresets.json
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
